@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pick 4 - UAE Lottery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1929 0%, #1a237e 30%, #283593 60%, #3949ab 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(13, 71, 161, 0.3) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 25%, #1976d2 50%, #1565c0 75%, #0d47a1 100%);
+            background-size: 200% 200%;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(13, 71, 161, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 60%);
+            animation: shimmer 4s infinite;
+        }
+
+        .header::after {
+            content: '✨';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 24px;
+            animation: sparkle 2s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.3);
+            letter-spacing: 3px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, #ffffff 0%, #ffd700 50%, #ffffff 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 3s linear infinite;
+        }
+
+        @keyframes textShine {
+            to { background-position: 200% center; }
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .scrolling-banner {
+            background: linear-gradient(90deg, #d32f2f, #c62828, #b71c1c);
+            background-size: 200% 100%;
+            animation: bannerGradient 3s linear infinite;
+            color: white;
+            padding: 15px 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes bannerGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .main-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .lottery-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(13, 71, 161, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lottery-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd700, #ff8f00, #ffd700);
+            background-size: 200% 100%;
+            animation: goldLine 3s linear infinite;
+        }
+
+        @keyframes goldLine {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0d47a1;
+            margin-bottom: 25px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(13, 71, 161, 0.2);
+        }
+
+        .card-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+
+        .draw-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .draw-info-item {
+            background: linear-gradient(135deg, rgba(227, 242, 253, 0.9) 0%, rgba(187, 222, 251, 0.9) 100%);
+            backdrop-filter: blur(10px);
+            padding: 18px;
+            border-radius: 16px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .draw-info-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(13, 71, 161, 0.3);
+        }
+
+        .draw-info-item strong {
+            display: block;
+            color: #0d47a1;
+            font-size: 11px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .draw-info-item span {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a237e;
+        }
+
+        .winning-numbers {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .number-ball {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(145deg, #1565c0 0%, #0d47a1 50%, #1a237e 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: 900;
+            box-shadow: 
+                0 10px 30px rgba(13, 71, 161, 0.5),
+                0 0 20px rgba(255, 215, 0, 0.3),
+                inset 0 3px 15px rgba(255, 255, 255, 0.3),
+                inset 0 -3px 10px rgba(0, 0, 0, 0.2);
+            border: 4px solid rgba(255, 255, 255, 0.4);
+            animation: pulse 2s infinite, glow 3s ease-in-out infinite alternate;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 10px 30px rgba(13, 71, 161, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), inset 0 3px 15px rgba(255, 255, 255, 0.3); }
+            to { box-shadow: 0 10px 30px rgba(13, 71, 161, 0.5), 0 0 40px rgba(255, 215, 0, 0.5), inset 0 3px 15px rgba(255, 255, 255, 0.3); }
+        }
+
+        .prize-info {
+            background: linear-gradient(135deg, #ffd700 0%, #ffb300 25%, #ff8f00 50%, #ffb300 75%, #ffd700 100%);
+            background-size: 200% 200%;
+            color: #1a237e;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: goldGradient 4s ease infinite;
+        }
+
+        @keyframes goldGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .prize-info::before {
+            content: '🏆';
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 70px;
+            opacity: 0.25;
+            transform: rotate(15deg);
+            animation: trophyFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes trophyFloat {
+            0%, 100% { transform: rotate(15deg) translateY(0); }
+            50% { transform: rotate(15deg) translateY(-10px); }
+        }
+
+        .prize-info h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .prize-info p {
+            font-size: 32px;
+            font-weight: 900;
+            color: #0d47a1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .agent-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(13, 71, 161, 0.1);
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #0d47a1, #1565c0, #0d47a1);
+            background-size: 200% 100%;
+            animation: blueLine 3s linear infinite;
+        }
+
+        @keyframes blueLine {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .contact-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(13, 71, 161, 0.1);
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd700, #ff8f00, #ffd700);
+            background-size: 200% 100%;
+            animation: goldLine 3s linear infinite;
+        }
+
+        .contact-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0d47a1;
+            margin-bottom: 25px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(13, 71, 161, 0.2);
+        }
+
+        .contact-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+
+        .agent-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(13, 71, 161, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(13, 71, 161, 0.3);
+        }
+
+        .agent-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #0d47a1, #1565c0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0d47a1;
+            margin-bottom: 5px;
+        }
+
+        .agent-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a237e;
+            font-family: 'Courier New', monospace;
+        }
+
+        .agent-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0d47a1;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(13, 71, 161, 0.2);
+        }
+
+        .agent-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #0d47a1, transparent);
+            margin: 12px auto 0;
+            border-radius: 2px;
+        }
+
+        .passcode-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+            letter-spacing: 12px;
+            border: 3px solid #e0e0e0;
+            border-radius: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .passcode-input:focus {
+            border-color: #0d47a1;
+            box-shadow: 0 0 0 5px rgba(13, 71, 161, 0.15), 0 8px 25px rgba(13, 71, 161, 0.2);
+            background: white;
+            transform: translateY(-2px);
+        }
+
+        .passcode-input::placeholder {
+            letter-spacing: 2px;
+            color: #aaa;
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            font-size: 19px;
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, #0d47a1 0%, #1565c0 25%, #1976d2 50%, #1565c0 75%, #0d47a1 100%);
+            background-size: 200% 200%;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 25px rgba(13, 71, 161, 0.4), 0 0 30px rgba(13, 71, 161, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: btnGradient 4s ease infinite;
+        }
+
+        @keyframes btnGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(13, 71, 161, 0.5), 0 0 50px rgba(13, 71, 161, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 15px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+            font-weight: 600;
+            padding: 12px;
+            background: #fee;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .image-container {
+            display: none;
+            margin-top: 25px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(13, 71, 161, 0.2);
+            border: 4px solid #0d47a1;
+            animation: imageAppear 0.6s ease;
+        }
+
+        @keyframes imageAppear {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .number-ball {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
+            .draw-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .draw-info-item {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>DAILY PICK 4</h1>
+        <p>The UAE Lottery Official</p>
+    </div>
+
+    <div class="scrolling-banner">
+        <div class="scrolling-text">If you want to win this game, Please contact your Agent. Register first.</div>
+    </div>
+
+    <div class="main-content">
+        <div class="lottery-card">
+            <div class="card-title">Today's Draw Results</div>
+            
+            <div class="draw-info">
+                <div class="draw-info-item">
+                    <strong>DRAW DATE</strong>
+                    <span>04/05/2026</span>
+                </div>
+                <div class="draw-info-item">
+                    <strong>DRAW TIME</strong>
+                    <span>8:00 PM</span>
+                </div>
+            </div>
+
+            <div class="winning-numbers">
+                <div class="number-ball">7</div>
+                <div class="number-ball">3</div>
+                <div class="number-ball">9</div>
+                <div class="number-ball">2</div>
+            </div>
+
+            <div class="prize-info">
+                <h3>GRAND PRIZE</h3>
+                <p>AED 25,000</p>
+            </div>
+        </div>
+
+        <div class="agent-section">
+            <div class="agent-title">Enter your Agent PIN code to get next game</div>
+            
+            <input 
+                type="text" 
+                class="passcode-input" 
+                id="passcodeInput" 
+                placeholder="Enter 6-digit code" 
+                maxlength="6"
+                pattern="[0-9]*"
+                inputmode="numeric"
+            >
+
+            <button class="submit-btn" onclick="checkPasscode()">Submit</button>
+
+            <div class="error-message" id="errorMessage">
+                Invalid passcode! Please try again.
+            </div>
+
+            <div class="image-container" id="imageContainer">
+                <img id="secretImage" src="" alt="Next Game Image">
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <div class="contact-title">Contact Our Agents</div>
+            
+            <div class="agent-card">
+                <div class="agent-icon">🇪🇺</div>
+                <div class="agent-info">
+                    <div class="agent-name">European Agent</div>
+                    <div class="agent-number">01727 739933</div>
+                </div>
+            </div>
+
+            <div class="agent-card">
+                <div class="agent-icon">🇦🇸</div>
+                <div class="agent-info">
+                    <div class="agent-name">Asian Agent</div>
+                    <div class="agent-number">+8801921213593</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Passcode to image mapping
+        const PASSCODE_MAP = {
+            "111111": "Images/IMG-20260503-WA0026.jpg",
+            "222222": "Images/IMG-20260504-WA0000.jpg"
+        };
+
+        function checkPasscode() {
+            const input = document.getElementById('passcodeInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const imageContainer = document.getElementById('imageContainer');
+            const secretImage = document.getElementById('secretImage');
+
+            const enteredCode = input.value.trim();
+
+            if (PASSCODE_MAP[enteredCode]) {
+                // Correct passcode
+                errorMessage.style.display = 'none';
+                imageContainer.style.display = 'block';
+                secretImage.src = PASSCODE_MAP[enteredCode];
+                
+                // Disable input after successful entry
+                input.disabled = true;
+            } else {
+                // Incorrect passcode
+                errorMessage.style.display = 'block';
+                imageContainer.style.display = 'none';
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('passcodeInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPasscode();
+            }
+        });
+
+        // Only allow numbers
+        document.getElementById('passcodeInput').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    </script>
+</body>
+</html>
